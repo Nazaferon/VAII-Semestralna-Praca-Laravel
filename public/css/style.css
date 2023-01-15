@@ -1,0 +1,117 @@
+.navbar-brand img{
+    width:130px;
+}
+
+.top-navbar{
+    border-bottom: 12px solid white;
+}
+
+.form-control{
+    margin-right: 2%;
+}
+
+.description-form{
+    width: 30%;
+}
+
+.action-logo{
+    white-space: nowrap;
+    font-size: 20px;
+    margin-left: 15px;
+}
+
+.navbar-link {
+    font-size: 20px;
+}
+
+.bottom-container{
+    padding-top: 102px; /*90 navbar*/
+}
+
+@media screen and (max-width: 575px) {
+    .left-side-navbar{
+        padding-bottom: 175px !important;
+    }
+
+    .bottom-container {
+        padding-top: 175px; /*228 navbar*/
+    }
+
+    .profile-tags {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 659px) {
+    .wishlists-container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+.login-register-container {
+    margin-top: 1%;
+    margin-left: 25%;
+    margin-right: 25%;
+    padding: 1%;
+    border: 1px solid black;
+}
+
+.action-logo{
+    font-size: 22px !important;
+}
+
+.title{
+    font-weight: bold;
+}
+
+.left-side-navbar{
+    width: 170px;
+    padding-bottom: 102px;
+    position: fixed;
+    overflow-y:auto;
+    height: 100%;
+    flex-direction: column;
+}
+
+.guitars {
+    padding-left: 182px;
+    padding-right: 0;
+}
+
+.sorting-tabs{
+    font-size: 18px;
+}
+
+.button-1{
+    margin-top: 20px;
+    margin-bottom: 1.5rem;
+}
+
+.back-to-top {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    display: none;
+    z-index: 1;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+}
+
+.alert {
+    padding: 0;
+}
+
+.alert-message{
+    margin: 10px;
+}
+
+.wishlists-container{
+    padding-left: 18%;
+    padding-right: 18%;
+    margin-top: 1%;
+}
