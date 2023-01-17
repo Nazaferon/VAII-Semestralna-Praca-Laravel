@@ -27,7 +27,6 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
                             <li><a class="dropdown-item" href="/users/edit">Osobný profil</a></li>
-                            <li><a class="dropdown-item" href="/users/ratings">Hodnotenia</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><form class="inline" method="post" action="/users/logout">
                                      @csrf
