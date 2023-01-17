@@ -13,38 +13,6 @@ $(document).ready(function() {
     });
 
     $('#flash-message').show().fadeOut(7000);
-
-    $(document).on('submit', 'form[data-confirm]', function(e){
-        if(!confirm($(this).data('confirm'))){
-            e.stopImmediatePropagation();
-            e.preventDefault();
-        }
-    });
-
-    function pageLinkNumber() {
-        var newPage = $(this).data("page-number");
-        changeItems(newPage);
-    }
-
-    function pageLinkNext() {
-        event.preventDefault();
-        Paginator.setCurrentPage(Paginator.currentPage() + 1);
-        console.log("ok");
-    }
-
-    function pageLinkPrevious() {
-        changeItems(--currentPage);
-    }
-
-    function changeItems($newPageNumber) {
-        $('.items li').addClass('hideme');
-        var startItem = ($newPageNumber - 1) * 10 +1;
-        var endItem = $newPageNumber * 10 +1;
-        for (var item = startItem; item < endItem; item++) {
-            $(".items li:nth-of-type(" + item + ")").removeClass('hideme');
-        }
-        currentPage = $newPageNumber;
-    }
 });
 
 function sieveItems() {
@@ -53,18 +21,19 @@ function sieveItems() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    var min_price = $("#min_price").val();
-    var max_price = $("#max_price").val();
-    var available = (document.getElementById("available").checked);
-    var newer = (document.getElementById("newer").checked);
+    let min_price = $("#min_price").val();
+    let max_price = $("#max_price").val();
+    let available = (document.getElementById("available").checked);
+    let newer = (document.getElementById("newer").checked);
+    let sorter = "";
     if ($("#most-popular").hasClass("active")) {
-        var sorter = "most-popular";
+        sorter = "most-popular";
     }
     else if ($("#most-expensive").hasClass("active")) {
-        var sorter = "most-expensive";
+        sorter = "most-expensive";
     }
     else if ($("#less-expensive").hasClass("active")) {
-        var sorter = "less-expensive";
+        sorter = "less-expensive";
     }
     $.ajax({
         type: "post",
@@ -83,21 +52,43 @@ function sieveItems() {
     });
 }
 
-function increaseOrderAmount(orderId, orderAmount)
+function setRatingValue(new_rating_value) {
+    let rating_value = document.getElementById("rating_value");
+    rating_value.value = new_rating_value;
+
+    for (let i = 1; i <= parseInt(rating_value.value); i++) {
+        let star = document.getElementById("star_" + i);
+        star.classList.remove("text-secondary");
+        star.classList.add("text-warning");
+
+    }
+    for (let i = parseInt(rating_value.value) + 1; i <= 5; i++) {
+        let star = document.getElementById("star_" + i);
+        star.classList.remove("text-warning");
+        star.classList.add("text-secondary");
+    }
+}
+
+function showUpdateReviewForm() {
+    $("#update_review_form").show();
+    $("#read_review").hide();
+}
+
+function increaseOrderAmount(order_id, order_amount)
 {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    if (orderAmount < 100)
-        orderAmount++;
+    if (order_amount < 100)
+        order_amount++;
     $.ajax({
         type: "post",
         url: "/shopping-basket/update/amount",
         data: {
-            "orderAmount": orderAmount,
-            "orderId": orderId
+            "order_amount": order_amount,
+            "order_id": order_id
         },
         dataType: 'json',
         success: function(response) {

@@ -77,6 +77,8 @@ class UserController extends Controller
     public function destroy(Request $request)
     {
         $user = Auth::user();
+        $user->wishlists()->delete();
+        $user->orders()->delete();
         $user->delete();
         return redirect("/")->with("message", "Účet bol odstránený!");
     }

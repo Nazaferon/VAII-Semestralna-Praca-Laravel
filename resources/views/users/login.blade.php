@@ -31,7 +31,7 @@
                 <button type="submit" class="btn btn-primary mt-3">Prihlásiť</button>
                 <p class="mt-3">
                     Nemáte vytvorený účet?
-                    <a href="/register">Registrovať</a>
+                    <a href="/users/register">Registrovať</a>
                 </p>
             </form>
         </div>

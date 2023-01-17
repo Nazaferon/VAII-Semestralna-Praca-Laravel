@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Rating;
 use DateTime;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,12 @@ class ItemController extends Controller
             $brand = $request->session()->get("brand");
         else
             $brand = "";
+        foreach ($items as $item) {
+            $ratings_count = $item->ratings()->count();
+            $rating_value = 0;
+            foreach ($item->ratings()->get() as $rating)
+                $rating_value += $rating->value;
+        }
         return view("items.index", [
             "items" => $items,
             "category" => $category,
@@ -69,8 +76,17 @@ class ItemController extends Controller
             $items = $items->sortBy("price");
         else  if ($request->get("sorter") == "most-expensive")
             $items = $items->sortByDesc("price");
-        else
-            $items = $items->sortBy("price");
+        else {
+            $items = $items->sortByDesc(function($item) {
+                $rating_value = 0;
+                $ratings = $item->ratings()->get();
+                foreach ($ratings as $rating)
+                    $rating_value += $rating->value;
+                if ($ratings->count() > 1)
+                    $rating_value /= $ratings->count();
+                return $rating_value;
+            });
+        }
         return $items;
     }
 
@@ -78,53 +94,80 @@ class ItemController extends Controller
     {
         $items = $this->getSievedItems($request);
         $code =
-            '<div id="home-table">
-                <div class="row pt-3 px-1">';
+            '<div class="row pt-3 px-1">';
         foreach ($items as $item) {
             $code .=
-                '    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 pb-3 px-2">
-                        <a class="card text-decoration-none h-100" href="/items/show' . $item->id . '"
-                           style="overflow: hidden">
-                            <div class="card-body p-0">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <img src="' . asset("storage/images/items/" . $item->image_path) . '" class="card-img-top pb-3" alt="Image"/>';
+                '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 pb-3 px-2">
+                    <a class="card text-decoration-none h-100" href="/items/show/' . $item->id . '" style="overflow: hidden">
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <img src="' . asset("storage/images/items/" . $item->image_path) . '" class="card-img-top pb-3" alt="Image"/>';
             $date = new DateTime();
             $date->format('Y-m-d h:i:s');
             $date->modify("-1 month");
             if ($item->created_at >= $date)
                 $code .=
-                                        '<h5>
-                                            <span class="badge bg-primary" style="position: absolute; top: 244px;">Novinka</span>
-                                        </h5>';
+                    '               <h5>
+                                        <span class="badge bg-primary" style="position: absolute; top: 244px;">Novinka</span>
+                                    </h5>';
             $code .=
-                '                   </li>
-                                        <li class="list-group-item">
-                                            <h6 class="card-title">' . $item->brand . " " . $item->model . '</h6>
-                                            <p class="mb-2">' . $item->category . '</p>
-                                            <h6><strong>€' . $item->price . '</strong></h6>
-                                            <p class="mb-0">Na sklade: <span class="fw-bold">' . $item->amount . '</span>
-                                            </p>
-                                            <div class="ms-auto text-warning">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </a>
-                        </div>';
+                '               </li>
+                                <li class="list-group-item">
+                                    <h6 class="card-title">' . $item->brand . " " . $item->model . '</h6>
+                                    <p class="mb-2">' . $item->category . '</p>
+                                    <h6><strong>€' . $item->price . '</strong></h6>
+                                    <p class="mb-0">Na sklade: <span class="fw-bold">' . $item->amount . '</span>
+                                    </p>';
+            $ratings_count = $item->ratings()->count();
+            if ($ratings_count > 0) {
+                $rating_value = 0;
+                foreach ($item->ratings()->get() as $rating)
+                    $rating_value += $rating->value;
+                $rating_value /= $item->ratings()->count();
+                $rating_value_fraction = $rating_value - floor($rating_value);
+                $code .= '
+                                    <div class="text-warning" style="display: inline-block;">';
+                for ($i = 1; $i <= $rating_value; $i++)
+                    $code .= '
+                                        <i class="fa fa-star"></i>';
+                if ($rating_value_fraction >= 0.5)
+                    $code .= '
+                                        <i class="fa fa-star-half-o"></i>';
+                $code .= '
+                                    </div>
+                                    <div class="text-secondary" style="display: inline-block;">';
+                for ($i = $rating_value + 1; $i <= 5; $i++)
+                    $code .= '
+                                        <i class="fa fa-star"></i>';
+                $code .= '
+                                    </div>';
+            }
+            $code .= '
+                                </li>
+                            </ul>
+                        </div>
+                    </a>
+                </div>';
         }
         return json_encode($code);
     }
 
     public function show(Item $item)
     {
+        $user = auth()->user();
+        if ($user) {
+            $user_rating = Rating::where("item_id", "=", $item->id)->where("user_id", "=", $user->id)->first();
+            $other_ratings = Rating::where("item_id", "=", $item->id)->where("user_id", "!=", $user->id)->get();
+        }
+        else {
+            $user_rating = null;
+            $other_ratings = Rating::where("item_id", "=", $item->id)->get();
+        }
         return view("items.show", [
-           "item" => $item
+            "item" => $item,
+            "other_ratings" => $other_ratings,
+            "user_rating" => $user_rating
         ]);
     }
 }

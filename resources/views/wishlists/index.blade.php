@@ -72,45 +72,10 @@
                     @foreach ($wishlists as $wishlist)
                         <input type="hidden" name="item_id_all[]" value="{{$wishlist->item->id}}">
                     @endforeach
-                    <button type="submit" class="btn btn-success rounded-pill mt-3" style="text-align: center;">
+                    <button type="submit" class="btn btn-success rounded-pill mt-3 mb-3" style="text-align: center;">
                         <h5><i class="fa fa-shopping-cart pt-2" aria-hidden="true"></i> Vložiť všetko do nákupného košíka</h5>
                     </button>
                 </form>
-            </div>
-                <div class="mt-3">
-
-                    <div class="d-none flex-sm-fill d-sm-flex align-items-sm-center justify-content-sm-between">
-                        <div>
-                            <p class="small text-muted">
-                                Showing
-                                <span class="fw-semibold">7</span>
-                                to
-                                <span class="fw-semibold">8</span>
-                                of
-                                <span class="fw-semibold">8</span>
-                                results
-                            </p>
-                        </div>
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link disabled" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-
-                </div>
             </div>
         </div>
 @endsection

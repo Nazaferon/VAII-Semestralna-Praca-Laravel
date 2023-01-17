@@ -66,8 +66,7 @@
                                 <h4 class="title pt-2">Zrušenie konta:</h4>
                             </header>
                             <div class="card-body">
-                                <form method="post" action="/users/destroy"
-                                      data-confirm="Naozaj chcete odstrániť svoj profil?">
+                                <form method="post" onsubmit="return confirm('Naozaj chcete odstrániť svoj profil?');" action="/users/destroy">
                                     @csrf
                                     <div class="mb-3">
                                         <label>Umožňuje vám natrvalo odstrániť svoj účet a informácie.</label>

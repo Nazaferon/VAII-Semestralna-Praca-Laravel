@@ -44,7 +44,15 @@ class Item extends Model
         }
     }
 
-    public function wishlist(){
+    public function wishlists(){
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
+
+    public function ratings(){
+        return $this->hasMany(Rating::class);
     }
 }

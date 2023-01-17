@@ -11,8 +11,7 @@ class WishlistController extends Controller
     {
         $user = auth()->user();
         $wishlists = Wishlist::latest()->where("user_id", "=", $user->id)->get();
-        return view("wishlist.index", [
-            "user" => $user,
+        return view("wishlists.index", [
             "wishlists" => $wishlists
         ]);
     }

@@ -85,53 +85,35 @@
                                             <h6><strong>€{{$item->price}}</strong></h6>
                                             <p class="mb-0">Na sklade: <span class="fw-bold">{{$item->amount}}</span>
                                             </p>
-                                            <div class="ms-auto text-warning">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                            @php
+                                                $ratings_count = $item->ratings()->count();
+                                            if ($ratings_count > 0) {
+                                                $rating_value = 0;
+                                                foreach ($item->ratings()->get() as $rating)
+                                                    $rating_value += $rating->value;
+                                                $rating_value /= $item->ratings()->count();
+                                                $rating_value_fraction = $rating_value - floor($rating_value);
+                                                @endphp
+                                                <div class="text-warning" style="display: inline-block;">
+                                                @for ($i = 1; $i <= $rating_value; $i++)
+                                                    <i class="fa fa-star"></i>
+                                                @endfor
+                                                @if ($rating_value_fraction >= 0.5)
+                                                    <i class="fa fa-star-half-o"></i>
+                                                @endif
+                                                </div>
+                                                <div class="text-secondary" style="display: inline-block;">
+                                                @for ($i = $rating_value + 1; $i <= 5; $i++)
+                                                    <i class="fa fa-star"></i>
+                                                @endfor
                                             </div>
+                                            @php } @endphp
                                         </li>
                                     </ul>
                                 </div>
                             </a>
                         </div>
                     @endforeach
-                </div>
-                <div class="mt-6">
-
-                    <div class="d-none flex-sm-fill d-sm-flex align-items-sm-center justify-content-sm-between">
-                        <div>
-                            <p class="small text-muted">
-                                Showing
-                                <span class="fw-semibold">7</span>
-                                to
-                                <span class="fw-semibold">8</span>
-                                of
-                                <span class="fw-semibold">8</span>
-                                results
-                            </p>
-                        </div>
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link disabled" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-
                 </div>
             </div>
         </div>
